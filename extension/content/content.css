@@ -14,7 +14,7 @@
   outline: 3px solid #2b50ec !important;
   outline-offset: 2px !important;
   box-shadow: 0 0 0 5px rgba(43, 80, 236, 0.22), 0 0 20px rgba(43, 80, 236, 0.55) !important;
-  transform: scale(1.18);
+  transform: scale(1.35);
   transform-origin: center;
   transition: transform 0.08s ease-out;
   position: relative;
@@ -23,8 +23,8 @@
 /* checkbox / radio 本體太小（約 13px），倍率要更高才看得見（如 tixCraft 同意條款勾選框） */
 input[type="checkbox"].tt-enlarge,
 input[type="radio"].tt-enlarge {
-  transform: scale(1.9);
-  margin: 0 6px;
+  transform: scale(2.3);
+  margin: 0 10px;
 }
 
 /* ── 篩選隱藏（由 TTFilter 增刪）── */
