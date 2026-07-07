@@ -9,16 +9,22 @@
   display: none !important;
 }
 
-/* ── 放大關鍵按鈕：電光藍外框 + 微光暈，不改動站台版位 ── */
+/* ── 放大關鍵按鈕：電光藍外框 + 光暈 + 明顯放大（transform 不佔版位、不觸發 reflow）── */
 .tt-enlarge {
-  outline: 2px solid #2b50ec !important;
+  outline: 3px solid #2b50ec !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 4px rgba(43, 80, 236, 0.18), 0 0 14px rgba(43, 80, 236, 0.45) !important;
-  transform: scale(1.04);
+  box-shadow: 0 0 0 5px rgba(43, 80, 236, 0.22), 0 0 20px rgba(43, 80, 236, 0.55) !important;
+  transform: scale(1.18);
   transform-origin: center;
   transition: transform 0.08s ease-out;
   position: relative;
-  z-index: 1;
+  z-index: 2;
+}
+/* checkbox / radio 本體太小（約 13px），倍率要更高才看得見（如 tixCraft 同意條款勾選框） */
+input[type="checkbox"].tt-enlarge,
+input[type="radio"].tt-enlarge {
+  transform: scale(1.9);
+  margin: 0 6px;
 }
 
 /* ── 篩選隱藏（由 TTFilter 增刪）── */
