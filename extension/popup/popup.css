@@ -1,0 +1,317 @@
+/* 工具列 popup 樣式 — 戰術設計（銳利 4px、墨黑高對比、電光藍 signal、hairline 去卡片）。
+   設計 token 由 ../lib/theme.css 提供（--ink / --signal / --live / --hair …）。 */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  width: 320px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ── 表頭 ──────────────────────────────────────────────────────── */
+.hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--hair);
+}
+.brand { display: flex; align-items: center; gap: 9px; }
+.logo {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  position: relative;
+}
+.logo::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid var(--signal);
+}
+.name { font-size: 15px; font-weight: 700; letter-spacing: 0.2px; }
+.gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s;
+}
+.gear:hover { color: var(--ink); border-color: var(--hair-2); }
+
+/* ── mono 區段標籤 ─────────────────────────────────────────────── */
+.tt-mono { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 1px; }
+
+.sec-head {
+  font-size: 10px;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+
+/* ── 每站總開關（最上方）──────────────────────────────────────── */
+.site-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--hair);
+  border-left: 3px solid var(--live);   /* 啟用＝live 綠 accent */
+}
+.site-bar.is-off { border-left-color: var(--ink-3); }
+.site-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.site-lab { font-size: 9px; color: var(--ink-3); }
+.site-host {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.2px;
+  text-transform: none;            /* 網域不要大寫 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 230px;
+}
+.site-bar.is-off .site-host { color: var(--ink-2); }
+.tgl:disabled { opacity: 0.45; cursor: default; }
+
+/* ── 狀態列 ────────────────────────────────────────────────────── */
+.status {
+  padding: 10px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--hair);
+}
+.status-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.status-note { font-size: 9px; color: var(--ink-3); margin-top: 8px; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: var(--radius);
+  border: 1px solid var(--hair-2);
+  background: var(--panel-2);
+  color: var(--ink-2);
+}
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+}
+/* vault: 已鎖（alert）/ 已解鎖（live）/ 未設定（中性） */
+.badge-locked { color: var(--alert); border-color: var(--alert); background: var(--alert-soft); }
+.badge-unlocked { color: var(--live); border-color: var(--live); background: var(--live-soft); }
+.badge-uninit { color: var(--ink-2); }
+/* monitor: 監控中（signal）/ 待命（中性） */
+.badge-monitoring { color: var(--signal); border-color: var(--signal); background: var(--signal-soft); }
+.badge-monitoring::before { animation: tt-pulse 1.1s ease-in-out infinite; }
+.badge-idle { color: var(--ink-2); }
+
+@keyframes tt-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* ── 區段容器 ──────────────────────────────────────────────────── */
+.sec {
+  padding: 14px;
+  border-bottom: 1px solid var(--hair);
+  background: var(--paper);
+}
+.sec:last-of-type { border-bottom: none; }
+
+/* ── 表單欄位 ──────────────────────────────────────────────────── */
+.field {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--hair-2);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.12s;
+}
+.field:focus { border-color: var(--signal); }
+select.field { cursor: pointer; appearance: none; }
+
+/* ── 按鈕 ──────────────────────────────────────────────────────── */
+.btn {
+  height: 34px;
+  padding: 0 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
+}
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn-primary { background: var(--signal); color: var(--signal-ink); border-color: var(--signal); }
+.btn-primary:hover:not(:disabled) { background: #2343cf; }
+.btn-ghost { background: transparent; color: var(--ink-2); border-color: var(--hair-2); }
+.btn-ghost:hover:not(:disabled) { color: var(--ink); border-color: var(--ink-2); }
+.btn-active { background: var(--signal-soft); color: var(--signal); border-color: var(--signal); }
+
+/* ── VAULT 區塊 ────────────────────────────────────────────────── */
+.vault-block { display: flex; flex-direction: column; gap: 8px; }
+.vault-block-row { flex-direction: row; align-items: center; justify-content: space-between; }
+.hint { margin: 0; font-size: 12px; color: var(--ink-2); }
+.hint-live { color: var(--live); font-weight: 600; }
+.inline-err {
+  font-size: 12px;
+  color: var(--alert);
+  background: var(--alert-soft);
+  border: 1px solid var(--alert);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+}
+
+/* ── 開關列（頁面增強）─────────────────────────────────────────── */
+.rows { border-top: 1px solid var(--hair); }
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 2px;
+  border-bottom: 1px solid var(--hair);
+}
+.row .lab { font-size: 13px; }
+
+/* 戰術開關：軌道 radius 4、方形 knob、開=live */
+.tgl {
+  width: 42px;
+  height: 22px;
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  border: 1px solid var(--hair-2);
+  position: relative;
+  cursor: pointer;
+  flex: 0 0 auto;
+  padding: 0;
+  transition: background 0.12s, border-color 0.12s;
+}
+.tgl .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(13, 15, 20, 0.25);
+  transition: left 0.12s;
+}
+.tgl.on { background: var(--live); border-color: var(--live); }
+.tgl.on .knob { left: 22px; }
+.tgl:focus-visible { outline: 2px solid var(--signal); outline-offset: 1px; }
+
+/* ── 一鍵填入 ──────────────────────────────────────────────────── */
+.autofill-body, #autofillReady, .monitor-body { display: flex; flex-direction: column; gap: 8px; }
+.monitor-body { flex-direction: row; align-items: center; justify-content: space-between; }
+#monitorState { flex: 1 1 auto; }
+
+/* ── 表尾 ──────────────────────────────────────────────────────── */
+.ft {
+  padding: 11px 14px;
+  background: var(--panel);
+  border-top: 1px solid var(--hair);
+}
+.mono-foot { font-size: 9px; color: var(--live); letter-spacing: 0.5px; }
+
+/* ── 暫態 toast ────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  padding: 9px 11px;
+  font-size: 12px;
+  color: var(--night-ink);
+  background: var(--night-2);
+  border: 1px solid var(--night-line);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 14px rgba(13, 15, 20, 0.3);
+  z-index: 10;
+}
+.toast.toast-err { border-color: var(--alert); }
+
+/* ── 票券篩選（柴柴式 tag）─────────────────────────────────────── */
+.filter-body { display: flex; flex-direction: column; gap: 8px; }
+.filter-label { font-size: 9px; color: var(--ink-3); margin-top: 2px; }
+
+.chip-input { display: flex; gap: 6px; }
+.chip-input .field { flex: 1 1 auto; }
+.btn-add {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--hair-2);
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+.btn-add:hover { border-color: var(--signal); color: var(--signal); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips:empty { display: none; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px 3px 9px;
+  font-size: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--hair-2);
+  background: var(--panel-2);
+  color: var(--ink);
+}
+.chip-x {
+  border: none;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.chip-x:hover { color: var(--alert); }
+/* 黑名單 chip：alert 色調 */
+.chips-ex .chip { background: var(--alert-soft); border-color: var(--alert); color: var(--alert); }
+.chips-ex .chip-x { color: var(--alert); }
+
+.filter-soldout { border-bottom: none; padding: 4px 2px 0; }
+#filterReset { align-self: flex-start; }
+.filter-hint { font-size: 9px; color: var(--ink-3); line-height: 1.4; margin-top: 2px; }

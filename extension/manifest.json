@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "搶票助手 (Ticket Tactical)",
+  "version": "0.1.0",
+  "description": "個人用的合法搶票輔助：清版面、放大關鍵按鈕、票券篩選、注入工具列。不自動送單、不破解驗證碼、純本機不外傳。",
+  "permissions": ["storage", "notifications"],
+  "host_permissions": [
+    "https://tixcraft.com/*",
+    "https://*.tixcraft.com/*",
+    "https://weverse.io/*",
+    "https://*.weverse.io/*",
+    "https://ticket.yes24.com/*",
+    "https://*.yes24.com/*",
+    "https://world.nol.com/*",
+    "https://*.nol.com/*",
+    "https://tkglobal.melon.com/*"
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "搶票助手",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options/options.html",
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://tixcraft.com/*",
+        "https://*.tixcraft.com/*",
+        "https://weverse.io/*",
+        "https://*.weverse.io/*",
+        "https://ticket.yes24.com/*",
+        "https://*.yes24.com/*",
+        "https://world.nol.com/*",
+        "https://*.nol.com/*",
+        "https://tkglobal.melon.com/*"
+      ],
+      "js": ["lib/messages.js", "lib/filter.js", "content/adapters.js", "content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}

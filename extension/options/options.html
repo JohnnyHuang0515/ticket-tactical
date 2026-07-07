@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>搶票助手 · 設定</title>
+  <link rel="stylesheet" href="../lib/theme.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="page-head">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span class="brand-name">搶票助手</span>
+      </div>
+      <div class="kicker tt-mono">OPTIONS / 設定</div>
+    </header>
+
+    <!-- 主密碼 / VAULT（置頂：須先解鎖才能管理個資） -->
+    <section class="card">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kicker tt-mono">MASTER KEY / 主密碼</div>
+          <h2 class="sec-title">主密碼</h2>
+        </div>
+        <span class="badge tt-mono" data-lockstate-badge></span>
+      </div>
+
+      <!-- 未設定：建立主密碼 -->
+      <form class="stack" id="masterSetForm" hidden>
+        <p class="lead">建立主密碼以加密保存實名個資。主密碼<strong>僅你知道、不會被儲存</strong>，遺失無法復原。</p>
+        <div class="field">
+          <label class="field-label tt-mono" for="setPwd1">主密碼（至少 8 碼）</label>
+          <input class="input" type="password" id="setPwd1" autocomplete="new-password" />
+        </div>
+        <div class="field">
+          <label class="field-label tt-mono" for="setPwd2">再次輸入</label>
+          <input class="input" type="password" id="setPwd2" autocomplete="new-password" />
+        </div>
+        <div class="form-error" id="setErr" role="alert" hidden></div>
+        <div><button class="btn btn-primary" type="submit">建立主密碼</button></div>
+      </form>
+
+      <!-- 已鎖：解鎖 -->
+      <form class="stack" id="masterUnlockForm" hidden>
+        <p class="lead">個資庫已鎖定。輸入主密碼以解鎖本次工作階段。</p>
+        <div class="field">
+          <label class="field-label tt-mono" for="unlockPwd">主密碼</label>
+          <input class="input" type="password" id="unlockPwd" autocomplete="current-password" />
+        </div>
+        <div class="form-error" id="unlockErr" role="alert" hidden></div>
+        <div><button class="btn btn-primary" type="submit">解鎖</button></div>
+      </form>
+
+      <!-- 已解鎖：狀態 + 危險操作 -->
+      <div class="stack" id="masterUnlockedView" hidden>
+        <div class="note note-live">
+          <span class="note-dot" aria-hidden="true"></span>
+          <span>已解鎖 · 個資可於下方檢視與編輯。關閉所有售票分頁或瀏覽器後將自動上鎖。</span>
+        </div>
+        <div><button class="btn" type="button" id="lockNowBtn">立即上鎖</button></div>
+
+        <div class="danger">
+          <div class="danger-head tt-mono">DANGER ZONE</div>
+          <div class="danger-body">
+            <div>
+              <div class="row-label">重設主密碼</div>
+              <div class="row-sub">會清空所有已儲存的實名個資，且無法復原。</div>
+            </div>
+            <button class="btn btn-danger" type="button" id="resetVaultBtn">重設（清空個資）</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 實名個資 / IDENTITY -->
+    <section class="card">
+      <div class="sec-head">
+        <div>
+          <div class="sec-kicker tt-mono">VAULT / 加密個資庫</div>
+          <h2 class="sec-title">實名個資</h2>
+        </div>
+        <button class="btn btn-primary" type="button" id="addProfileBtn" hidden>＋ 新增個資</button>
+      </div>
+
+      <!-- 未解鎖：導向上方主密碼區 -->
+      <div class="gate-note" id="identityGateNote" hidden>🔒 請先於上方解鎖個資庫，才能檢視 / 編輯個資。</div>
+
+      <!-- 解鎖後：個資清單 -->
+      <div id="identityUnlocked" hidden>
+        <div class="rows" id="profileRows"></div>
+        <div class="empty tt-mono" id="profileEmpty" hidden>尚無個資 · 點「新增個資」建立第一筆</div>
+        <div class="note note-live" id="identityNote">
+          <span class="note-dot" aria-hidden="true"></span>
+          <span>AES-GCM 加密；主密碼僅你知道，關閉售票分頁自動鎖定，絕不外傳。</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="page-foot tt-mono">功能開關與票券篩選請在工具列彈窗 (popup) 設定 · 支援站台：tixCraft / Weverse</div>
+  </div>
+
+  <!-- 個資新增 / 編輯 對話框 -->
+  <div class="modal" id="profileModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div class="modal-head">
+        <div class="sec-kicker tt-mono">PROFILE</div>
+        <h2 class="modal-title" id="profileModalTitle">新增個資</h2>
+      </div>
+      <form id="profileForm" class="modal-body">
+        <div class="field-grid" id="profileFields"></div>
+
+        <div class="row row-static modal-default-row">
+          <div class="row-main">
+            <div class="row-label">設為預設個資</div>
+            <div class="row-sub tt-mono">DEFAULT · 自動填入時優先使用</div>
+          </div>
+          <div class="tgl" id="profileDefault" role="switch" tabindex="0" aria-checked="false">
+            <div class="knob"></div>
+          </div>
+        </div>
+
+        <div class="form-error" id="profileErr" role="alert" hidden></div>
+      </form>
+      <div class="modal-foot">
+        <button class="btn" type="button" data-close-modal>取消</button>
+        <button class="btn btn-primary" type="submit" form="profileForm">儲存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 通用確認 對話框 -->
+  <div class="modal" id="confirmModal" hidden>
+    <div class="modal-backdrop" data-close-confirm></div>
+    <div class="modal-box modal-box-sm" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <div class="modal-head">
+        <div class="sec-kicker tt-mono" id="confirmKicker">CONFIRM</div>
+        <h2 class="modal-title" id="confirmTitle">確認</h2>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text" id="confirmText"></p>
+        <div class="field" id="confirmTypeWrap" hidden>
+          <label class="field-label tt-mono" id="confirmTypeLabel" for="confirmTypeInput"></label>
+          <input class="input" type="text" id="confirmTypeInput" autocomplete="off" />
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" type="button" data-close-confirm>取消</button>
+        <button class="btn btn-danger" type="button" id="confirmOkBtn">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 浮動提示 -->
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="../lib/messages.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

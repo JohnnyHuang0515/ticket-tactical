@@ -1,0 +1,9 @@
+# 只公開 extension/,規格與設計檔不進 repo
+desgin/
+tixcraft-helper/
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp

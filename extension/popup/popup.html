@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=320" />
+  <link rel="stylesheet" href="../lib/theme.css" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>搶票助手</title>
+</head>
+<body>
+  <!-- ── 表頭：標記 + 名稱 + 設定齒輪 ───────────────────────────── -->
+  <header class="hd">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"></span>
+      <span class="name">搶票助手</span>
+    </div>
+    <button id="openOptions" class="gear" type="button" title="設定" aria-label="開啟設定頁">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- ── 每站總開關：此分頁站台是否啟用外掛（最上方）──────────────── -->
+  <section class="site-bar" id="siteBar">
+    <div class="site-info">
+      <span class="site-lab tt-mono" id="siteLab">在此站啟用</span>
+      <span class="site-host tt-mono" id="siteHost">—</span>
+    </div>
+    <button id="siteToggle" class="tgl" type="button" role="switch" aria-checked="true"
+            aria-label="在此站台啟用搶票助手">
+      <span class="knob"></span>
+    </button>
+  </section>
+
+  <!-- ── 狀態列：vault 鎖定 + 監控狀態徽章 ─────────────────────── -->
+  <section class="status">
+    <div class="status-badges">
+      <span id="lockBadge" class="badge">—</span>
+      <span id="monitorBadge" class="badge">—</span>
+    </div>
+    <div class="status-note tt-mono">生效於 拓元 · MELON · YES24 · NOL · WEVERSE 購票頁</div>
+  </section>
+
+  <!-- ── VAULT：依鎖定狀態切換顯示（解鎖 / 設定 / 鎖定） ────────── -->
+  <section class="sec vault-sec">
+    <div class="sec-head tt-mono">VAULT / 個資保險箱</div>
+
+    <!-- 已鎖：輸入主密碼解鎖 -->
+    <div id="unlockBlock" class="vault-block" hidden>
+      <input id="pwInput" class="field" type="password" placeholder="輸入主密碼" autocomplete="off" />
+      <button id="unlockBtn" class="btn btn-primary" type="button">解鎖</button>
+      <div id="unlockErr" class="inline-err" hidden></div>
+    </div>
+
+    <!-- 未設定：導向設定主密碼 -->
+    <div id="setupBlock" class="vault-block" hidden>
+      <p class="hint">尚未設定主密碼，請先建立保險箱。</p>
+      <button id="setupBtn" class="btn btn-primary" type="button">設定主密碼</button>
+    </div>
+
+    <!-- 已解鎖：可手動上鎖 -->
+    <div id="unlockedBlock" class="vault-block vault-block-row" hidden>
+      <span id="unlockedInfo" class="hint hint-live">已解鎖</span>
+      <button id="lockBtn" class="btn btn-ghost" type="button">鎖定</button>
+    </div>
+  </section>
+
+  <!-- ── 頁面增強：功能開關 ─────────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head tt-mono">ENHANCE / 頁面增強</div>
+    <div class="rows" id="enhanceRows"></div>
+  </section>
+
+  <!-- ── 票券篩選：柴柴式 tag 輸入，即時套用 ─────────────────────── -->
+  <section class="sec">
+    <div class="sec-head tt-mono">FILTER / 票券篩選</div>
+    <div class="filter-body">
+      <label class="filter-label tt-mono" for="includeInput">INCLUDE / 想要</label>
+      <div class="chip-input">
+        <input id="includeInput" class="field" type="text" placeholder="區域 / 價格，Enter 加入" autocomplete="off" />
+        <button id="includeAdd" class="btn-add" type="button" aria-label="新增想要條件">＋</button>
+      </div>
+      <div id="includeChips" class="chips"></div>
+
+      <label class="filter-label tt-mono" for="excludeInput">EXCLUDE / 黑名單</label>
+      <div class="chip-input">
+        <input id="excludeInput" class="field" type="text" placeholder="不要的區域 / 價格" autocomplete="off" />
+        <button id="excludeAdd" class="btn-add" type="button" aria-label="新增黑名單條件">＋</button>
+      </div>
+      <div id="excludeChips" class="chips chips-ex"></div>
+
+      <div class="row filter-soldout">
+        <span class="lab">隱藏已售完</span>
+        <button id="hideSoldOut" class="tgl" type="button" role="switch" aria-checked="false" aria-label="隱藏已售完">
+          <span class="knob"></span>
+        </button>
+      </div>
+
+      <button id="filterReset" class="btn btn-ghost" type="button">顯示全部票券</button>
+      <div class="filter-hint tt-mono">一個 tag 一條件 · tag 內逗號=同時符合 · 數字 2800↔2,800</div>
+    </div>
+  </section>
+
+  <!-- ── 一鍵填入：選擇個資 + 填入當前分頁 ─────────────────────── -->
+  <section class="sec">
+    <div class="sec-head tt-mono">AUTOFILL / 一鍵填入</div>
+    <div id="autofillBody" class="autofill-body">
+      <p id="autofillLocked" class="hint" hidden>請先解鎖保險箱以使用一鍵填入。</p>
+      <div id="autofillReady" hidden>
+        <select id="profileSelect" class="field"></select>
+        <button id="autofillBtn" class="btn btn-primary" type="button">一鍵填入</button>
+      </div>
+      <p id="autofillEmpty" class="hint" hidden>尚無個資，請於設定頁新增。</p>
+    </div>
+  </section>
+
+  <!-- ── 釋票監控：啟動 / 停止 ─────────────────────────────────── -->
+  <section class="sec">
+    <div class="sec-head tt-mono">MONITOR / 釋票監控</div>
+    <div class="monitor-body">
+      <span id="monitorState" class="hint">待命</span>
+      <button id="monitorBtn" class="btn btn-ghost" type="button">啟動監控</button>
+    </div>
+  </section>
+
+  <!-- ── 表尾：合規宣告 ────────────────────────────────────────── -->
+  <footer class="ft">
+    <span class="mono-foot tt-mono">純本機 · 不自動送單 · 不破解驗證碼</span>
+  </footer>
+
+  <!-- 暫態提示 -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="../lib/messages.js"></script>
+  <script src="../content/adapters.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
